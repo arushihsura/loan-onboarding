@@ -1,29 +1,31 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Space+Grotesk:wght@500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --bg-top: #f4fbff;
-  --bg-mid: #fff7ef;
-  --bg-bottom: #fff;
-  --text-strong: #102a43;
-  --text-muted: #486581;
-  --brand: #d64545;
-  --brand-deep: #b51f1f;
-  --accent: #0f7b8f;
+  --bg-top: #f2f6fc;
+  --bg-mid: #eef3fb;
+  --bg-bottom: #e8eef9;
+  --text-strong: #1b3155;
+  --text-muted: #5f7393;
+  --brand: #2f66c9;
+  --brand-deep: #224f9f;
+  --accent: #4a7be0;
+  --navy: #183564;
   --card: #ffffff;
 }
 
 body {
   margin: 0;
   min-height: 100vh;
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Manrope', sans-serif;
   color: var(--text-strong);
   background:
-    radial-gradient(circle at 14% 10%, rgba(15, 123, 143, 0.14), transparent 36%),
-    radial-gradient(circle at 86% 12%, rgba(214, 69, 69, 0.16), transparent 34%),
+    radial-gradient(circle at 8% 4%, rgba(80, 121, 214, 0.18), transparent 32%),
+    radial-gradient(circle at 92% 9%, rgba(39, 99, 201, 0.14), transparent 34%),
+    radial-gradient(circle at 50% 100%, rgba(255, 255, 255, 0.7), transparent 42%),
     linear-gradient(180deg, var(--bg-top) 0%, var(--bg-mid) 46%, var(--bg-bottom) 100%);
 }
 
@@ -42,21 +44,31 @@ body {
 }
 
 .campaign-shell::before {
-  width: 260px;
-  height: 260px;
-  left: -80px;
-  bottom: 64px;
-  background: linear-gradient(135deg, rgba(255, 160, 122, 0.45), rgba(245, 97, 97, 0.24));
+  width: 280px;
+  height: 280px;
+  left: -82px;
+  bottom: 48px;
+  background: linear-gradient(135deg, rgba(99, 146, 243, 0.35), rgba(122, 186, 255, 0.18));
 }
 
 .campaign-shell::after {
-  width: 280px;
-  height: 280px;
-  right: -100px;
-  top: 70px;
-  background: linear-gradient(135deg, rgba(124, 199, 209, 0.34), rgba(143, 234, 216, 0.24));
+  width: 260px;
+  height: 260px;
+  right: -92px;
+  top: 58px;
+  background: linear-gradient(135deg, rgba(37, 82, 163, 0.28), rgba(93, 144, 238, 0.2));
 }
 
 .title-font {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'Sora', sans-serif;
+}
+
+.card-clean {
+  border: 1px solid rgba(32, 69, 128, 0.1);
+  background: #ffffff;
+  box-shadow: 0 18px 44px rgba(27, 49, 85, 0.09);
+}
+
+.blue-gradient {
+  background: linear-gradient(145deg, #274f95 0%, #204784 50%, #1a3d70 100%);
 }

@@ -36,13 +36,13 @@ function riskBarClass(risk) {
 
 function ChartCard({ title, subtitle, children, accent = false }) {
   return (
-    <section className="rounded-[1.75rem] border border-[#102a43]/10 bg-white p-5 shadow-[0_18px_40px_rgba(16,42,67,0.08)]">
+    <section className="rounded-[1.6rem] border border-[#20467f]/10 bg-white p-5 shadow-[0_20px_40px_rgba(31,67,120,0.08)]">
       <div className="flex items-end justify-between gap-3">
         <div>
-          <p className="text-xs font-bold uppercase tracking-[0.12em] text-[#0f7b8f]">{subtitle}</p>
-          <h2 className="mt-2 text-xl font-extrabold text-[#102a43]">{title}</h2>
+          <p className="text-xs font-bold uppercase tracking-[0.12em] text-[#4a7be0]">{subtitle}</p>
+          <h2 className="mt-2 text-xl font-extrabold text-[#1b3155]">{title}</h2>
         </div>
-        {accent ? <span className="rounded-full bg-[#102a43] px-3 py-1 text-xs font-bold text-white">Live</span> : null}
+        {accent ? <span className="rounded-full bg-[#1f4378] px-3 py-1 text-xs font-bold text-white">Live</span> : null}
       </div>
       <div className="mt-5">{children}</div>
     </section>
@@ -52,47 +52,51 @@ function ChartCard({ title, subtitle, children, accent = false }) {
 export default function AdminDashboardPage() {
   return (
     <main className="min-h-screen px-4 py-8 sm:px-8 lg:px-12">
-      <section className="mx-auto w-full max-w-7xl">
-        <div className="mb-8 flex flex-wrap items-end justify-between gap-4 rounded-[2rem] border border-white/60 bg-white/80 p-6 shadow-[0_20px_60px_rgba(16,42,67,0.12)] backdrop-blur-sm">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#0f7b8f]">Internal Dashboard</p>
-            <h1 className="title-font mt-2 text-3xl font-extrabold text-[#102a43] sm:text-4xl">Enterprise Readiness Console</h1>
-            <p className="mt-3 max-w-2xl text-sm leading-6 text-[#486581]">
-              Monitor applications, fraud pressure, approval trends, and live operational quality from one admin view.
-            </p>
+      <section className="mx-auto w-full max-w-7xl space-y-6">
+        <header className="blue-gradient rounded-[1.9rem] p-6 text-white shadow-[0_24px_52px_rgba(28,64,121,0.32)] sm:p-7">
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.16em] text-white/80">Admin Dashboard</p>
+              <h1 className="title-font mt-2 text-3xl font-bold sm:text-4xl">Enterprise Readiness Console</h1>
+              <p className="mt-3 max-w-2xl text-sm leading-6 text-white/85">
+                Monitor applications, fraud pressure, approval trends, and live operational health from one clean control panel.
+              </p>
+            </div>
+            <div className="rounded-2xl border border-white/25 bg-white/10 px-4 py-3">
+              <p className="text-xs font-bold uppercase tracking-[0.12em] text-white/70">System Health</p>
+              <p className="mt-1 text-lg font-extrabold text-white">Healthy • 99.97% uptime</p>
+            </div>
           </div>
-          <div className="rounded-2xl border border-[#102a43]/10 bg-[#f8fbff] px-4 py-3">
-            <p className="text-xs font-bold uppercase tracking-[0.12em] text-[#627d98]">System Health</p>
-            <p className="mt-1 text-lg font-extrabold text-[#102a43]">Healthy • 99.97% uptime</p>
-          </div>
-        </div>
+        </header>
 
-        <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-          {kpis.map((item) => (
-            <article key={item.label} className="rounded-[1.6rem] border border-[#102a43]/10 bg-white p-5 shadow-[0_14px_32px_rgba(16,42,67,0.08)]">
-              <p className="text-xs font-bold uppercase tracking-[0.12em] text-[#627d98]">{item.label}</p>
-              <div className="mt-3 flex items-end justify-between gap-3">
-                <p className="text-3xl font-extrabold text-[#102a43]">{item.value}</p>
-                <span className="rounded-full bg-[#f3f7fb] px-3 py-1 text-xs font-bold text-[#0f7b8f]">{item.change}</span>
-              </div>
-            </article>
-          ))}
+        <div className="rounded-[1.6rem] border border-[#20467f]/10 bg-white p-4 shadow-[0_16px_34px_rgba(31,67,120,0.08)] sm:p-5">
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            {kpis.map((item) => (
+              <article key={item.label} className="rounded-2xl bg-[#f4f8ff] p-4">
+                <p className="text-xs font-bold uppercase tracking-[0.12em] text-[#667c9e]">{item.label}</p>
+                <div className="mt-2 flex items-end justify-between gap-3">
+                  <p className="text-3xl font-extrabold text-[#1b3155]">{item.value}</p>
+                  <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-[#2f66c9]">{item.change}</span>
+                </div>
+              </article>
+            ))}
+          </div>
         </div>
 
         <div className="mt-6 grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
           <ChartCard title="Applications vs Approvals" subtitle="Daily volume" accent>
-            <div className="rounded-[1.5rem] bg-[#f8fbff] p-4">
+            <div className="rounded-[1.5rem] bg-[#f6f9ff] p-4">
               <svg viewBox="0 0 720 240" className="h-64 w-full">
                 <defs>
                   <linearGradient id="trendFill" x1="0%" x2="0%" y1="0%" y2="100%">
-                    <stop offset="0%" stopColor="#0f7b8f" stopOpacity="0.32" />
-                    <stop offset="100%" stopColor="#0f7b8f" stopOpacity="0.02" />
+                    <stop offset="0%" stopColor="#2f66c9" stopOpacity="0.32" />
+                    <stop offset="100%" stopColor="#2f66c9" stopOpacity="0.03" />
                   </linearGradient>
                 </defs>
                 <line x1="40" y1="200" x2="680" y2="200" stroke="#d9e2ec" strokeWidth="2" />
                 <polyline
                   fill="none"
-                  stroke="#0f7b8f"
+                  stroke="#2f66c9"
                   strokeWidth="5"
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -103,10 +107,10 @@ export default function AdminDashboardPage() {
                   points={`40,200 ${dailyTrend.map((value, index) => `${40 + index * 55},${200 - value * 2}`).join(' ')} 680,200`}
                 />
                 {dailyTrend.map((value, index) => (
-                  <circle key={index} cx={40 + index * 55} cy={200 - value * 2} r="5" fill="#d64545" />
+                  <circle key={index} cx={40 + index * 55} cy={200 - value * 2} r="5" fill="#ff8a39" />
                 ))}
               </svg>
-              <div className="mt-2 flex justify-between text-xs font-semibold text-[#627d98]">
+              <div className="mt-2 flex justify-between text-xs font-semibold text-[#667c9e]">
                 <span>8 AM</span>
                 <span>Noon</span>
                 <span>8 PM</span>
@@ -118,7 +122,7 @@ export default function AdminDashboardPage() {
             <div className="space-y-4">
               {riskDistribution.map((item) => (
                 <div key={item.label}>
-                  <div className="mb-2 flex items-center justify-between text-sm font-semibold text-[#102a43]">
+                  <div className="mb-2 flex items-center justify-between text-sm font-semibold text-[#1b3155]">
                     <span>{item.label}</span>
                     <span>{item.value}%</span>
                   </div>
@@ -128,20 +132,20 @@ export default function AdminDashboardPage() {
                 </div>
               ))}
             </div>
-            <div className="mt-5 rounded-2xl border border-[#102a43]/10 bg-[#f8fbff] p-4 text-sm text-[#486581]">
+            <div className="mt-5 rounded-2xl border border-[#20467f]/10 bg-[#f6f9ff] p-4 text-sm text-[#5f7393]">
               Fraud attempts remain low, while low-risk applications continue to convert strongly.
             </div>
           </ChartCard>
         </div>
 
-        <div className="mt-6 rounded-[1.75rem] border border-[#102a43]/10 bg-white shadow-[0_18px_40px_rgba(16,42,67,0.08)]">
-          <div className="border-b border-[#102a43]/10 p-5">
-            <p className="text-xs font-bold uppercase tracking-[0.12em] text-[#0f7b8f]">Sessions Table</p>
-            <h2 className="mt-2 text-xl font-extrabold text-[#102a43]">Recent Application Sessions</h2>
+        <div className="mt-6 rounded-[1.75rem] border border-[#20467f]/10 bg-white shadow-[0_18px_40px_rgba(31,67,120,0.08)]">
+          <div className="border-b border-[#20467f]/10 p-5">
+            <p className="text-xs font-bold uppercase tracking-[0.12em] text-[#4a7be0]">Sessions Table</p>
+            <h2 className="mt-2 text-xl font-extrabold text-[#1b3155]">Recent Application Sessions</h2>
           </div>
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-[#edf2f7]">
-              <thead className="bg-[#f8fbff] text-left text-xs uppercase tracking-[0.12em] text-[#627d98]">
+              <thead className="bg-[#f6f9ff] text-left text-xs uppercase tracking-[0.12em] text-[#667c9e]">
                 <tr>
                   <th className="px-5 py-4">Name</th>
                   <th className="px-5 py-4">Risk</th>
@@ -153,12 +157,12 @@ export default function AdminDashboardPage() {
                 {sessions.map((session) => (
                   <tr key={`${session.name}-${session.timestamp}`} className="hover:bg-[#fbfdff]">
                     <td className="px-5 py-4">
-                      <div className="font-semibold text-[#102a43]">{session.name}</div>
-                      <div className="text-xs text-[#627d98]">Enterprise onboarding</div>
+                      <div className="font-semibold text-[#1b3155]">{session.name}</div>
+                      <div className="text-xs text-[#6b7f9f]">Enterprise onboarding</div>
                     </td>
                     <td className="px-5 py-4">
                       <div className="w-full max-w-[180px]">
-                        <div className="mb-2 flex items-center justify-between text-sm font-semibold text-[#102a43]">
+                        <div className="mb-2 flex items-center justify-between text-sm font-semibold text-[#1b3155]">
                           <span>{session.risk}</span>
                           <span>{session.risk <= 30 ? 'Low' : session.risk <= 60 ? 'Medium' : 'High'}</span>
                         </div>
@@ -172,7 +176,7 @@ export default function AdminDashboardPage() {
                         {session.decision}
                       </span>
                     </td>
-                    <td className="px-5 py-4 text-sm font-semibold text-[#102a43]">{session.timestamp}</td>
+                    <td className="px-5 py-4 text-sm font-semibold text-[#1b3155]">{session.timestamp}</td>
                   </tr>
                 ))}
               </tbody>

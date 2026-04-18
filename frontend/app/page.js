@@ -1,50 +1,128 @@
+'use client';
+
 import Link from 'next/link';
+import { useAuth } from './context/AuthContext';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+import { FileText, Clipboard, Video, DollarSign, Zap, Lock, Cpu, Smartphone, CreditCard, CheckCircle } from 'lucide-react';
 
 export default function HomePage() {
+  const { user, loading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loading && user) {
+      router.push('/dashboard');
+    }
+  }, [user, loading, router]);
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  }
+
   return (
-    <main className="campaign-shell relative isolate flex min-h-screen items-center px-6 py-12 sm:px-10">
-      <section className="relative z-10 mx-auto w-full max-w-6xl rounded-[2.2rem] border border-white/60 bg-[color:var(--card)]/80 p-8 shadow-[0_25px_80px_rgba(16,42,67,0.14)] backdrop-blur-sm sm:p-12 lg:p-16">
-        <div className="grid items-center gap-10 lg:grid-cols-[1.2fr_0.8fr]">
-          <div>
-            <p className="mb-4 inline-flex rounded-full border border-[#0f7b8f]/20 bg-[#0f7b8f]/8 px-4 py-2 text-sm font-semibold uppercase tracking-[0.08em] text-[color:var(--accent)]">
-              Fast Approval Journey
-            </p>
-            <h1 className="title-font text-4xl font-extrabold leading-tight text-[color:var(--text-strong)] sm:text-5xl lg:text-6xl">
-              Get instant personal loan
-            </h1>
-            <p className="mt-5 max-w-xl text-lg leading-relaxed text-[color:var(--text-muted)]">
-              Complete your secure verification in a few guided steps and unlock instant access to personal loan offers.
-            </p>
-            <div className="mt-8 flex flex-wrap items-center gap-4">
+    <main className="min-h-screen bg-gradient-to-br from-[#edf4ff] via-[#f9fbff] to-[#e6efff]">
+      <section className="relative isolate px-5 py-16 sm:px-8 sm:py-24 lg:px-12">
+        <div className="mx-auto w-full max-w-6xl space-y-16">
+          {/* Hero */}
+          <div className="text-center space-y-8">
+            <div className="space-y-4">
+              <h1 className="title-font text-5xl sm:text-6xl lg:text-7xl font-bold leading-tight text-[#1b3155]">
+                Instant Loans in <span className="text-[#2f66c9]">2 Minutes</span>
+              </h1>
+              <p className="text-xl text-[#5f7393] max-w-2xl mx-auto">
+                AI-powered video verification. No paperwork. No waiting. Just you, your camera, and instant approval.
+              </p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
-                href="/verify"
-                className="inline-flex items-center justify-center rounded-2xl bg-[color:var(--brand)] px-8 py-4 text-base font-bold text-white shadow-[0_14px_26px_rgba(214,69,69,0.35)] transition duration-300 hover:-translate-y-0.5 hover:bg-[color:var(--brand-deep)]"
+                href="/signup"
+                className="rounded-xl bg-[#2f66c9] px-8 py-4 text-lg font-bold text-white hover:bg-[#224f9f] transition shadow-lg"
               >
-                Start Video Verification
+                Apply Now →
               </Link>
               <Link
-                href="/admin"
-                className="inline-flex items-center justify-center rounded-2xl border border-[#102a43]/15 bg-white/85 px-8 py-4 text-base font-bold text-[#102a43] transition duration-300 hover:-translate-y-0.5 hover:bg-white"
+                href="/login"
+                className="rounded-xl border border-[#d7e3f8] bg-white px-8 py-4 text-lg font-bold text-[#2f66c9] hover:border-[#2f66c9] transition"
               >
-                Open Admin Dashboard
+                Sign In
               </Link>
-              <span className="rounded-2xl border border-[#102a43]/10 bg-white/90 px-4 py-2 text-sm font-semibold text-[color:var(--text-muted)]">
-                100% paperless process
-              </span>
             </div>
           </div>
 
-          <div className="relative">
-            <div className="rounded-[1.75rem] border border-[#102a43]/10 bg-white p-5 shadow-[0_12px_30px_rgba(16,42,67,0.09)]">
-              <div className="rounded-2xl bg-gradient-to-br from-[#f7fbff] via-[#fff4ed] to-[#f6fffd] p-6">
-                <p className="text-sm font-semibold uppercase tracking-[0.12em] text-[#0f7b8f]">Why it is quick</p>
-                <ul className="mt-4 space-y-3 text-sm text-[#334e68]">
-                  <li className="rounded-xl bg-white/80 p-3">AI-assisted identity checks</li>
-                  <li className="rounded-xl bg-white/80 p-3">Live guidance while recording</li>
-                  <li className="rounded-xl bg-white/80 p-3">Instant status on submission</li>
-                </ul>
-              </div>
+          {/* How It Works */}
+          <div className="space-y-8">
+            <h2 className="title-font text-3xl font-bold text-center text-[#1b3155]">How It Works</h2>
+            <div className="grid gap-6 lg:grid-cols-4">
+              {[
+                { icon: FileText, title: 'Sign Up', desc: 'Quick registration with OTP' },
+                { icon: Clipboard, title: 'Check Eligibility', desc: 'Instant pre-approval' },
+                { icon: Video, title: 'Video Verification', desc: '2-minute AI verification' },
+                { icon: DollarSign, title: 'Get Approved', desc: 'Instant loan offer' }
+              ].map((item, i) => {
+                const IconComponent = item.icon;
+                return (
+                  <div key={i} className="rounded-2xl border border-[#d7e3f8] bg-white p-6 text-center hover:shadow-lg transition">
+                    <div className="flex justify-center mb-3">
+                      <IconComponent size={40} className="text-[#2f66c9]" />
+                    </div>
+                    <h3 className="title-font font-bold text-[#1b3155]">{item.title}</h3>
+                    <p className="text-sm text-[#5f7393] mt-2">{item.desc}</p>
+                  </div>
+                );
+              })}
             </div>
+          </div>
+
+          {/* Features */}
+          <div className="space-y-8">
+            <h2 className="title-font text-3xl font-bold text-center text-[#1b3155]">Why CrediVision AI?</h2>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {[
+                { icon: Zap, title: 'Lightning Fast', desc: '2-minute instant approval' },
+                { icon: Lock, title: 'Secure & Private', desc: 'Bank-level encryption' },
+                { icon: Cpu, title: 'AI-Powered', desc: 'Advanced fraud detection' },
+                { icon: Smartphone, title: 'Mobile First', desc: 'Apply from anywhere' },
+                { icon: CreditCard, title: 'Flexible Terms', desc: 'Up to ₹25,00,000' },
+                { icon: CheckCircle, title: 'RBI-Compliant', desc: 'Fully regulated' }
+              ].map((item, i) => {
+                const IconComponent = item.icon;
+                return (
+                  <div key={i} className="rounded-lg border border-[#e4edf9] bg-[#f7faff] p-6">
+                    <div className="flex items-center gap-3 mb-3">
+                      <IconComponent size={24} className="text-[#2f66c9]" />
+                      <h3 className="font-bold text-[#1b3155]">{item.title}</h3>
+                    </div>
+                    <p className="text-sm text-[#5f7393]">{item.desc}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Social Proof */}
+          <div className="text-center space-y-6">
+            <p className="text-[#5f7393]">Trusted by leading financial institutions</p>
+            <div className="flex flex-wrap justify-center gap-6 items-center">
+              {['ICICI Bank', 'VISA', 'MasterCard', 'RBI'].map((partner, i) => (
+                <div key={i} className="px-6 py-3 rounded-lg bg-white border border-[#d7e3f8] font-semibold text-[#1b3155]">
+                  {partner}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* CTA */}
+          <div className="rounded-2xl blue-gradient p-8 text-center text-white shadow-lg">
+            <h3 className="title-font text-2xl font-bold mb-2">Ready to get your loan?</h3>
+            <p className="mb-6 text-white/90">Start your application now and get approved in 2 minutes</p>
+            <Link
+              href="/signup"
+              className="inline-block rounded-xl bg-white px-8 py-3 font-bold text-[#2f66c9] hover:bg-gray-100 transition"
+            >
+              Start Free Application →
+            </Link>
           </div>
         </div>
       </section>

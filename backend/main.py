@@ -11,10 +11,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-import cv2
-import mediapipe as mp
 import numpy as np
-import whisper
 from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
@@ -33,6 +30,58 @@ try:
 except Exception:
     Groq = None
 
+from database import connect_to_mongo, close_mongo, get_db
+from api_routes import (
+    SignupRequest, LoginRequest, EligibilityRequest, OfferAcceptRequest,
+    SessionInitRequest, SubmitAnswerRequest, SessionCompleteRequest,
+    signup_user, login_user, get_user_profile, update_user_status,
+    check_eligibility, generate_offer, accept_offer,
+    create_verification_record, complete_verification, get_application_timeline,
+    init_video_session, get_current_step, submit_answer, complete_video_session
+)
+
+# [*] Lazy-loaded heavy modules (loaded only when used)
+cv2 = None
+mp = None
+whisper_model = None
+face_mesh = None
+face_detection = None
+
+def _load_cv2():
+    """Lazy load OpenCV"""
+    global cv2
+    if cv2 is None:
+        import cv2 as cv2_module
+        cv2 = cv2_module
+    return cv2
+
+def _load_mediapipe():
+    """Lazy load MediaPipe"""
+    global mp, face_mesh, face_detection
+    if mp is None:
+        import mediapipe
+        mp = mediapipe
+        face_mesh = mp.solutions.face_mesh.FaceMesh(
+            static_image_mode=False,
+            max_num_faces=2,
+            refine_landmarks=True,
+            min_detection_confidence=0.5,
+            min_tracking_confidence=0.5,
+        )
+        face_detection = mp.solutions.face_detection.FaceDetection(
+            model_selection=0,
+            min_detection_confidence=0.5,
+        )
+    return mp, face_mesh, face_detection
+
+def _load_whisper():
+    """Lazy load Whisper model"""
+    global whisper_model
+    if whisper_model is None:
+        import whisper
+        whisper_model = whisper.load_model("base")
+    return whisper_model
+
 app = FastAPI(title="Loan Audio Intelligence Engine")
 
 app.add_middleware(
@@ -43,21 +92,22 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# [*] MongoDB Startup/Shutdown Events
+
+@app.on_event("startup")
+async def startup():
+    """Initialize MongoDB connection on startup"""
+    await connect_to_mongo()
+
+
+@app.on_event("shutdown")
+async def shutdown():
+    """Close MongoDB connection on shutdown"""
+    await close_mongo()
+
+
 UPLOAD_FOLDER = Path("uploads")
 UPLOAD_FOLDER.mkdir(exist_ok=True)
-
-whisper_model = whisper.load_model("base")
-face_mesh = mp.solutions.face_mesh.FaceMesh(
-    static_image_mode=False,
-    max_num_faces=2,
-    refine_landmarks=True,
-    min_detection_confidence=0.5,
-    min_tracking_confidence=0.5,
-)
-face_detection = mp.solutions.face_detection.FaceDetection(
-    model_selection=0,
-    min_detection_confidence=0.5,
-)
 
 
 class FaceVerificationResponse(BaseModel):
@@ -1326,6 +1376,94 @@ async def consent_compliance(
 @app.get("/audit-logs", response_model=list[AuditLogRow])
 def audit_logs(limit: int = 25) -> list[AuditLogRow]:
     return _fetch_recent_audit_logs(limit=limit)
+
+
+# [*] MongoDB User & Eligibility Endpoints
+
+@app.post("/api/signup")
+async def api_signup(request: SignupRequest) -> dict:
+    """User registration"""
+    return await signup_user(request, db=get_db())
+
+
+@app.post("/api/login")
+async def api_login(request: LoginRequest) -> dict:
+    """User login with OTP"""
+    return await login_user(request, db=get_db())
+
+
+@app.get("/api/user/{phone}")
+async def api_get_user(phone: str) -> dict:
+    """Get user profile"""
+    return await get_user_profile(phone, db=get_db())
+
+
+@app.put("/api/user/{phone}/status")
+async def api_update_user_status(phone: str, status_type: str, status_value: str) -> dict:
+    """Update user status (kyc, verification, offer)"""
+    return await update_user_status(phone, status_type, status_value, db=get_db())
+
+
+@app.post("/api/check-eligibility")
+async def api_check_eligibility(request: EligibilityRequest) -> dict:
+    """Check loan eligibility and track in user journey"""
+    return await check_eligibility(request, db=get_db())
+
+
+@app.post("/api/generate-offer")
+async def api_generate_offer(phone: str, principal: float) -> dict:
+    """Generate personalized loan offer"""
+    return await generate_offer(phone, principal, db=get_db())
+
+
+@app.post("/api/accept-offer")
+async def api_accept_offer(request: OfferAcceptRequest) -> dict:
+    """Accept loan offer"""
+    return await accept_offer(request, db=get_db())
+
+
+@app.post("/api/create-verification")
+async def api_create_verification(phone: str, video_path: str) -> dict:
+    """Create video verification record"""
+    return await create_verification_record(phone, video_path, db=get_db())
+
+
+@app.put("/api/complete-verification")
+async def api_complete_verification(phone: str, face_detected: bool, voice_detected: bool, consent_given: bool) -> dict:
+    """Mark verification as complete"""
+    return await complete_verification(phone, face_detected, voice_detected, consent_given, db=get_db())
+
+
+@app.get("/api/application-timeline/{phone}")
+async def api_get_timeline(phone: str) -> dict:
+    """Get application timeline showing all steps completed"""
+    return await get_application_timeline(phone, db=get_db())
+
+
+# [*] Production Video KYC Session Endpoints
+
+@app.post("/api/session/init")
+async def api_init_session(request: SessionInitRequest) -> dict:
+    """Initialize a new video verification session"""
+    return await init_video_session(request, db=get_db())
+
+
+@app.get("/api/session/{session_id}/step")
+async def api_get_step(session_id: str) -> dict:
+    """Get current KYC step for the session"""
+    return await get_current_step(session_id, db=get_db())
+
+
+@app.post("/api/session/submit-answer")
+async def api_submit_answer(request: SubmitAnswerRequest) -> dict:
+    """Submit answer for current KYC step"""
+    return await submit_answer(request, db=get_db())
+
+
+@app.post("/api/session/complete")
+async def api_complete_session(request: SessionCompleteRequest) -> dict:
+    """Complete video session with verification results"""
+    return await complete_video_session(request, db=get_db())
 
 
 @app.post("/audit-log", response_model=AuditLogResponse)
