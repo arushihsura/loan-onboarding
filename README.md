@@ -12,21 +12,6 @@ End-to-end AI-powered loan onboarding, fraud detection, and credit decision plat
 
 ---
 
-## 📊 Results at a Glance
-
-| Metric | Value |
-|-------|-------|
-| Loan Journey Completion Time | < 3 minutes |
-| Fraud Signal Layers | 4 (Face, Audio, Metadata, Bureau) |
-| Decision Engine | RandomForest ML |
-| Verification Modes | Video + Audio + Device |
-| Consent Logging | Yes |
-| Explainable Decisions | Yes |
-| Audit Trail Storage | PostgreSQL |
-| Frontend Modules | Customer + Admin |
-
----
-
 ## 🔑 The Core Value Proposition
 
 Traditional digital loan journeys suffer from:
